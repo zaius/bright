@@ -1,0 +1,60 @@
+= Brightness key fix for Lenovo ideapad u350 
+== (and possibly a bunch of other laptops)
+I've had a bunch of problems getting Ubuntu to recognize my damn brightness 
+controls. Specifically, whenever I hit the brightness keys, I end up with this 
+in my logs:
+  ACPI: Failed to switch the brightness
+
+I found this solution to my problem:
+http://bbs.archlinux.org/viewtopic.php?id=73889
+
+But I wanted the brightness keys to work. This is a program that can be linked
+with gnome keyboard shortcuts to do just that.
+
+
+== 0. Check that the setpci solution works for you
+If it doesn't, this program won't work.
+
+
+== 1. Get it running
+If you're on Ubuntu 9.10 AMD64 there is a binary (bright). Download that.
+If not, you'll need to download bright.c and compile:
+  cc bright.c -o bright
+
+To increase brightness:
+  sudo ./bright ++
+To decrease brightness: 
+  sudo ./bright --
+
+
+== 2. Make it run as root
+The setpci calls that the program uses need to be run as root. Your keyboard 
+shortcut can't prompt you to enter your password, so we need to use setuid
+
+Change to the directory with the binary
+  sudo chown root bright
+  sudo chmod u+s,a+x bright
+
+Note that there are a bunch of security holes in this program. Specifically, 
+you could easily change the path and write a malicious script named setpci or
+lspci and get root access.  I.e. don't use this on a shared computer. If you 
+want a more secure version, you could change the calls to use libpci instead. 
+It needs more doc before I attempt it though.
+
+
+== 3. Add the keyboard mappings
+In gnome, go System, Preferences, Keyboard Shortcuts
+Click add
+Name: Brightness up
+Command: /path/to/bright ++
+Click the command and press your brightness up key on your keyboard
+Do the same for down, but swap '++' with '--'
+
+BAM. Your brightness keys should work.
+
+
+= License
+This code is licensed under the ISC license which lets you do pretty much
+whatever you want with it. Please see LICENSE for the full text.
+
+Copyright (c) 2009 David Kelso - david at kelso dot id dot au
