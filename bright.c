@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  // Increase of decrease the existing brightness value
+  // Increase or decrease the existing brightness value
   if (strcmp(argv[1], "++") == 0) {
     value += JUMP;
     if (value > 0xff) value = 0xff;
